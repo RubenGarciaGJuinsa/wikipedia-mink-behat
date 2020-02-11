@@ -21,5 +21,15 @@ RUN docker-php-ext-install zip
 
 ###FIN COMPOSER###
 
+RUN apt-get -y install sudo
+
+RUN useradd -u 1000 docker \
+    && adduser docker sudo \
+    && adduser docker root \
+    && echo "docker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers
+
+USER 1000:1000
+
 CMD composer install \
-    && apache2-foreground
+    && vendor/bin/behat --init \
+    && sudo apache2-foreground
